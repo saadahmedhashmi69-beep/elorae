@@ -17,7 +17,7 @@ export function Travel() {
               : "UAE life means frequent travel. DuoSmooth is designed to fit into your routine at home — and we're confirming exact dimensions so we can speak precisely to how it packs for travel."}
           </p>
         </div>
-        <ProductPlaceholder slot="travel, toiletry bag" variant="champagne" aspect="aspect-[4/5]" />
+        <ProductPlaceholder slot="travel, toiletry bag" variant="champagne" scene="bag" aspect="aspect-[4/5]" />
       </Container>
     </section>
   );

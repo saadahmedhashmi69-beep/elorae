@@ -1,20 +1,18 @@
-export type BundleId = "single" | "duo" | "trio";
-
 export interface BundleOption {
-  id: BundleId;
+  /** Number of devices in this tier (1–6). Doubles as the tier's identity. */
   units: number;
   label: string;
   badge?: string;
-  unitPrice: number;
   totalPrice: number;
+  /** units × single-unit price — used to show "save AED X", never fabricated. */
   compareAtTotal: number;
+  recommended?: boolean;
 }
 
 export interface CartLine {
   id: string;
-  bundleId: BundleId;
-  label: string;
   units: number;
+  label: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;

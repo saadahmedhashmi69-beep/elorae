@@ -10,15 +10,15 @@ import { formatPrice, cn } from "@/lib/utils";
 import { getBundleOptions } from "@/lib/bundles";
 import { useCartStore } from "@/store/cart-store";
 import { trackAddToCart } from "@/lib/analytics";
-import type { BundleId } from "@/lib/types";
 
 const bundles = getBundleOptions();
+const defaultUnits = bundles.find((b) => b.recommended)?.units ?? bundles[0]?.units ?? 1;
 
 export function OfferSection() {
-  const [selectedId, setSelectedId] = useState<BundleId>("single");
+  const [selectedUnits, setSelectedUnits] = useState<number>(defaultUnits);
   const [qty, setQty] = useState(1);
   const addBundle = useCartStore((s) => s.addBundle);
-  const selected = bundles.find((b) => b.id === selectedId) ?? bundles[0];
+  const selected = bundles.find((b) => b.units === selectedUnits) ?? bundles[0];
 
   const handleAdd = () => {
     for (let i = 0; i < qty; i += 1) addBundle(selected);
@@ -33,7 +33,13 @@ export function OfferSection() {
   return (
     <section id="shop" className="py-16 sm:py-20 lg:py-24">
       <Container className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <ProductPlaceholder slot="offer, product hero" variant="rose" aspect="aspect-[4/5]" className="mx-auto w-full max-w-md" />
+        <ProductPlaceholder
+          slot={`offer, ${selected.label.toLowerCase()}`}
+          variant="rose"
+          scene={selected.units === 2 ? "duo" : selected.units >= 3 ? "trio" : undefined}
+          aspect="aspect-[4/5]"
+          className="mx-auto w-full max-w-md"
+        />
 
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-rose-dark">{siteConfig.brand.displayName}</p>
@@ -53,28 +59,35 @@ export function OfferSection() {
           </div>
 
           {bundles.length > 1 && (
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {bundles.map((bundle) => (
-                <button
-                  key={bundle.id}
-                  type="button"
-                  onClick={() => setSelectedId(bundle.id)}
-                  className={cn(
-                    "relative rounded-xl border px-4 py-3.5 text-left transition-colors",
-                    selectedId === bundle.id ? "border-charcoal bg-charcoal text-ivory" : "border-charcoal/15 hover:border-charcoal/40"
-                  )}
-                >
-                  {bundle.badge && (
-                    <span className="absolute -top-2.5 left-3 rounded-full bg-rose-dark px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ivory">
-                      {bundle.badge}
-                    </span>
-                  )}
-                  <p className="text-sm font-medium">{bundle.label}</p>
-                  <p className={cn("mt-1 text-xs", selectedId === bundle.id ? "text-ivory/80" : "text-charcoal-soft")}>
-                    {formatPrice(bundle.totalPrice)}
-                  </p>
-                </button>
-              ))}
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              {bundles.map((bundle) => {
+                const isSelected = selectedUnits === bundle.units;
+                return (
+                  <button
+                    key={bundle.units}
+                    type="button"
+                    onClick={() => setSelectedUnits(bundle.units)}
+                    className={cn(
+                      "relative rounded-xl border px-3 py-3.5 text-left transition-colors",
+                      isSelected
+                        ? "border-charcoal bg-charcoal text-ivory"
+                        : bundle.recommended
+                          ? "border-rose-dark/60 hover:border-rose-dark"
+                          : "border-charcoal/15 hover:border-charcoal/40"
+                    )}
+                  >
+                    {bundle.badge && (
+                      <span className="absolute -top-2.5 left-3 rounded-full bg-rose-dark px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ivory">
+                        {bundle.badge}
+                      </span>
+                    )}
+                    <p className="text-sm font-medium">{bundle.label}</p>
+                    <p className={cn("mt-1 text-xs", isSelected ? "text-ivory/80" : "text-charcoal-soft")}>
+                      {formatPrice(bundle.totalPrice)}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           )}
 

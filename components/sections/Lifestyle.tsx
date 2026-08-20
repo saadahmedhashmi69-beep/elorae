@@ -5,7 +5,7 @@ export function Lifestyle() {
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <Container className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <ProductPlaceholder slot="lifestyle, bathroom setting" variant="ivory" aspect="aspect-[4/5]" className="order-2 lg:order-1" />
+        <ProductPlaceholder slot="lifestyle, bathroom shelf" variant="ivory" scene="shelf" aspect="aspect-[4/5]" className="order-2 lg:order-1" />
         <div className="order-1 lg:order-2">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-rose-dark">Self-Care Ritual</p>
           <h2 className="mt-3 font-display text-3xl text-charcoal sm:text-4xl">From Shower to Self-Care.</h2>

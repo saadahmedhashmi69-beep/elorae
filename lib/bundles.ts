@@ -1,49 +1,24 @@
 import { siteConfig } from "./config";
 import type { BundleOption } from "./types";
 
-const round = (value: number) => Math.round(value * 100) / 100;
-
 /**
- * Bundle pricing is derived from the single-unit price plus a configurable
- * per-tier discount percentage (see .env.example) — never hard-coded, and
- * never presented as anything other than a computed multi-unit discount.
+ * Bundle pricing is a fixed, independently-configured ladder (see
+ * lib/config.ts `pricing.bundleTiers`) — each tier's total price is a
+ * business decision, not a computed discount. `compareAtTotal` (units ×
+ * single-unit price) is the only derived figure, used purely to show an
+ * honest "save AED X vs buying separately" line.
  */
 export function getBundleOptions(): BundleOption[] {
-  const { price, compareAtPrice, bundlesEnabled, bundle2DiscountPercent, bundle3DiscountPercent } = siteConfig.pricing;
+  const { price, bundlesEnabled, bundleTiers, recommendedUnits } = siteConfig.pricing;
 
-  const single: BundleOption = {
-    id: "single",
-    units: 1,
-    label: "1 Device",
-    unitPrice: price,
-    totalPrice: price,
-    compareAtTotal: compareAtPrice,
-  };
+  const tiers = bundlesEnabled ? bundleTiers : bundleTiers.filter((tier) => tier.units === 1);
 
-  if (!bundlesEnabled) return [single];
-
-  const duoUnitPrice = round(price * (1 - bundle2DiscountPercent / 100));
-  const trioUnitPrice = round(price * (1 - bundle3DiscountPercent / 100));
-
-  const duo: BundleOption = {
-    id: "duo",
-    units: 2,
-    label: "2 Devices",
-    badge: "BEST VALUE",
-    unitPrice: duoUnitPrice,
-    totalPrice: round(duoUnitPrice * 2),
-    compareAtTotal: round(compareAtPrice * 2),
-  };
-
-  const trio: BundleOption = {
-    id: "trio",
-    units: 3,
-    label: "3 Devices",
-    badge: "FAMILY & GIFT SET",
-    unitPrice: trioUnitPrice,
-    totalPrice: round(trioUnitPrice * 3),
-    compareAtTotal: round(compareAtPrice * 3),
-  };
-
-  return [single, duo, trio];
+  return tiers.map((tier) => ({
+    units: tier.units,
+    label: tier.units === 1 ? "1 Device" : `${tier.units} Devices`,
+    badge: tier.units === recommendedUnits ? "MOST POPULAR" : undefined,
+    totalPrice: tier.price,
+    compareAtTotal: tier.units * price,
+    recommended: tier.units === recommendedUnits,
+  }));
 }

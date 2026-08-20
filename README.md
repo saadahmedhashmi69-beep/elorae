@@ -57,18 +57,25 @@ real integration (Google Sheets via Apps Script webhook, Airtable, a proper
 database, etc.) — the validated `OrderPayload` shape in `lib/types.ts` is
 ready to hand to any of those.
 
-## Replacing placeholder photography
+## Product imagery
 
 There is no licensed product photography yet, so every "photo" slot on the
-site renders an elegant SVG illustration via
+site renders original vector artwork via
 [`components/ui/DeviceIllustration.tsx`](./components/ui/DeviceIllustration.tsx)
-(`<ProductPlaceholder slot="..." />`). This keeps the whole site visually
-consistent and avoids using imagery the business doesn't have rights to.
+(`<ProductPlaceholder slot="..." />`). This is not abstract placeholder
+line-art — it's a detailed, shaded, full-color illustration of the actual
+product design (ribbed cylindrical wand, foil-disc head at one end,
+precision trimmer cap at the other, rose-gold collars, oval button),
+grounded in real reference photography of the physical unit. It supports
+scene compositions (`scene="shelf"` for lifestyle, `scene="bag"` for travel,
+`scene="duo" | "trio"` for multi-unit bundles) so the whole site stays
+visually consistent without using any imagery the business doesn't hold
+rights to.
 
-To swap in real photography once available:
+To swap in real photography once it's available:
 
 1. Add images to `public/images/product/` (e.g. `hero.jpg`, `double-head.jpg`,
-   `lifestyle.jpg`, `packaging.jpg`).
+   `lifestyle.jpg`, `bundle-3pc.jpg`).
 2. Replace the relevant `<ProductPlaceholder slot="..." />` usage with
    `next/image`, e.g.:
    ```tsx

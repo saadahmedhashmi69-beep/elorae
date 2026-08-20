@@ -42,10 +42,21 @@ export const siteConfig = {
     compareAtPrice: num(process.env.NEXT_PUBLIC_PRODUCT_COMPARE_PRICE, 129),
     /** Whether to show multi-unit bundle offers on the offer section. */
     bundlesEnabled: bool(process.env.NEXT_PUBLIC_BUNDLES_ENABLED, true),
-    /** Extra discount applied per unit when buying the 2-unit bundle. */
-    bundle2DiscountPercent: num(process.env.NEXT_PUBLIC_BUNDLE_2_DISCOUNT_PERCENT, 10),
-    /** Extra discount applied per unit when buying the 3-unit bundle. */
-    bundle3DiscountPercent: num(process.env.NEXT_PUBLIC_BUNDLE_3_DISCOUNT_PERCENT, 15),
+    /**
+     * Fixed multi-unit bundle ladder (1–6 devices). Each tier's total price
+     * is independently configurable via env vars — not derived by formula —
+     * since bulk pricing is a business decision, not a percentage discount.
+     * `recommendedUnits` marks which tier is presented as the hero bundle.
+     */
+    bundleTiers: [
+      { units: 1, price: num(process.env.NEXT_PUBLIC_BUNDLE_1_PRICE, 89) },
+      { units: 2, price: num(process.env.NEXT_PUBLIC_BUNDLE_2_PRICE, 159) },
+      { units: 3, price: num(process.env.NEXT_PUBLIC_BUNDLE_3_PRICE, 219) },
+      { units: 4, price: num(process.env.NEXT_PUBLIC_BUNDLE_4_PRICE, 279) },
+      { units: 5, price: num(process.env.NEXT_PUBLIC_BUNDLE_5_PRICE, 329) },
+      { units: 6, price: num(process.env.NEXT_PUBLIC_BUNDLE_6_PRICE, 379) },
+    ],
+    recommendedUnits: num(process.env.NEXT_PUBLIC_BUNDLE_RECOMMENDED_UNITS, 3),
     shippingFee: num(process.env.NEXT_PUBLIC_SHIPPING_FEE, 0),
     codFee: num(process.env.NEXT_PUBLIC_COD_FEE, 0),
   },

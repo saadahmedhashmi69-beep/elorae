@@ -26,15 +26,14 @@ export const useCartStore = create<CartState>()(
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),
       addBundle: (bundle) => {
-        const existing = get().lines.find((line) => line.bundleId === bundle.id);
+        const existing = get().lines.find((line) => line.units === bundle.units);
         if (existing) {
           get().setQuantity(existing.id, existing.quantity + 1);
           set({ isOpen: true });
           return;
         }
         const line: CartLine = {
-          id: `${bundle.id}-${Date.now()}`,
-          bundleId: bundle.id,
+          id: `bundle-${bundle.units}-${Date.now()}`,
           label: bundle.label,
           units: bundle.units,
           quantity: 1,
